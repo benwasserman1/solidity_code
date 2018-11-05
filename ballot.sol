@@ -22,14 +22,24 @@ contract Ballot {
    // similar to a dictionary term where each address maps to a Voter
    mapping(address => Voter) public voters;
 
-   Candidate[2] public candidates;
+   Candidate[] public candidates;
 
-   Candidate candidate1 = Candidate("Bob Smith", 0);
-   Candidate candidate2 = Candidate("John George", 0);
+   constructor() public {
+        // For each of the provided proposal names,
+        // create a new proposal object and add it
+        // to the end of the array.
+        // `Proposal({...})` creates a temporary
+        // Proposal object and `proposals.push(...)`
+        // appends it to the end of `proposals`.
+        candidates.push(Candidate({
+            name: "Bob Smith",
+            votes: 0
+        }));
+        candidates.push(Candidate({
+            name: "John George",
+            votes: 0
+        }));
 
-   function getCandidates() public constant returns (Candidate[2]){
-      Candidate[2] memory candidates = [candidate1, candidate2];
-      return candidates;
     }
 
     function vote(uint candidate) public {
@@ -37,24 +47,24 @@ contract Ballot {
         sender.hasVoted = true;
         sender.vote = candidate;
 
-        Candidate[2] memory candidates = getCandidates();
-
         // vote
         candidates[candidate].votes += 1;
-
     }
 
-    function determineWinner() public constant returns (Candidate[2]) {
-        Candidate[2] memory candidates = getCandidates();
+    function showVotes() public constant returns (Candidate[]) {
         return candidates;
     }
 
-   // constructor to set all candidate votes to 0
-
-   // function for vote
-
+   // BEN
    // function to ensure someone doesn't vote twice
 
    // function to determine winner
+
+   // CHRISTINA
+   // make sure candidate being voted for is in array
+
+   // add event for every time someone has voted
+
+   // ensuring users are confidential
 
 }
