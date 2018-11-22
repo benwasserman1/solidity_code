@@ -1,7 +1,6 @@
 pragma solidity ^0.4.7;
 pragma experimental ABIEncoderV2;
 import "remix_tests.sol"; // this import is automatically injected by Remix.
-import "./ballot.sol";
 
 contract Ballot {
 
@@ -23,6 +22,9 @@ contract Ballot {
    mapping(address => Voter) public voters;
 
    Candidate[] public candidates;
+   
+   // when a vote has been cast, add it to the logs
+   event voteCast(string name, string message);
 
    constructor() public {
         // For each of the provided proposal names,
@@ -43,12 +45,26 @@ contract Ballot {
     }
 
     function vote(uint candidate) public {
+        
+        // setting variable equal to an index in an existing mapping
         Voter storage sender = voters[msg.sender];
+        
+        // validating that user input is within array of candidates
+        require(candidate == 1 || candidate == 0, "Not a valid candidate.");
+        
         sender.hasVoted = true;
         sender.vote = candidate;
 
         // vote
         candidates[candidate].votes += 1;
+        
+        emit voteCast(candidates[candidate].name, "Vote cast.");
+    }
+    
+    // returns both names of candidates
+    function showCandidates() public constant returns (string, string)
+    {
+        return (candidates[0].name, candidates[1].name);
     }
 
     function showVotes() public constant returns (Candidate[]) {
@@ -61,9 +77,6 @@ contract Ballot {
    // function to determine winner
 
    // CHRISTINA
-   // make sure candidate being voted for is in array
-
-   // add event for every time someone has voted
 
    // ensuring users are confidential
 
