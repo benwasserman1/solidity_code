@@ -2,7 +2,7 @@ pragma solidity ^0.4.7;
 pragma experimental ABIEncoderV2;
 import "remix_tests.sol"; // this import is automatically injected by Remix.
 
-contract Ballot {
+contract ballot {
 
    struct Voter
    {
@@ -22,7 +22,7 @@ contract Ballot {
    mapping(address => Voter) public voters;
 
    Candidate[] public candidates;
-   
+
    // when a vote has been cast, add it to the logs
    event voteCast(string name, string message);
 
@@ -45,22 +45,26 @@ contract Ballot {
     }
 
     function vote(uint candidate) public {
-        
+
         // setting variable equal to an index in an existing mapping
         Voter storage sender = voters[msg.sender];
-        
+
         // validating that user input is within array of candidates
         require(candidate == 1 || candidate == 0, "Not a valid candidate.");
-        
-        sender.hasVoted = true;
-        sender.vote = candidate;
 
-        // vote
-        candidates[candidate].votes += 1;
-        
-        emit voteCast(candidates[candidate].name, "Vote cast.");
+        if (sender.hasVoted == false) {
+
+            sender.hasVoted = true;
+            sender.vote = candidate;
+
+            // vote
+            candidates[candidate].votes += 1;
+
+            emit voteCast(candidates[candidate].name, "Vote cast.");
+        }
+
     }
-    
+
     // returns both names of candidates
     function showCandidates() public constant returns (string, string)
     {
@@ -71,13 +75,17 @@ contract Ballot {
         return candidates;
     }
 
-   // BEN
-   // function to ensure someone doesn't vote twice
-
-   // function to determine winner
-
-   // CHRISTINA
-
-   // ensuring users are confidential
+    function showLeader() public constant returns (string) {
+        uint length = candidates.length;
+        uint max_votes = 0;
+        string name;
+        for (uint i = 0; i < length; i++) {
+            if (candidates[i].votes > max_votes) {
+                max_votes = candidates[i].votes;
+                name = candidates[i].name;
+            }
+        }
+        return name;
+    }
 
 }
